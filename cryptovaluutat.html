@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azura Wallet - Kryptovaluutat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: #1a1a1a;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3.2rem;
+            color: #00d1b2;
+            font-weight: 700;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 5rem auto;
+            padding: 2rem;
+            background-color: rgba(28, 28, 28, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+        .crypto-details {
+            margin-bottom: 4rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 3rem;
+        }
+        .crypto-details h2 {
+            font-size: 3rem;
+            color: #00d1b2;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .crypto-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            width: 100%;
+            gap: 2rem;
+        }
+        .info-item {
+            background-color: #2b2b2b;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            width: 22%;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .info-item:hover {
+            transform: scale(1.05);
+            background-color: #34495e;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        .info-item h3 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .info-item p {
+            font-size: 1.4rem;
+            color: #ccc;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin-top: 3rem;
+            background-color: #333;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        footer {
+            text-align: center;
+            margin-top: 6rem;
+            font-size: 1rem;
+            color: #aaa;
+        }
+        footer a {
+            color: #00d1b2;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 5rem;
+            color: #00d1b2;
+        }
+        .error {
+            color: red;
+            font-size: 1.6rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        /* Responsiivisuus */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+            .info-item {
+                width: 48%;
+            }
+        }
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .info-item {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Azura Wallet - Kryptovaluutat</h1>
+    </header>
+
+    <div class="container">
+        <!-- Loading Indicator -->
+        <div class="loading" id="loading">Ladataan tietoja...</div>
+        <div class="error" id="error"></div>
+
+        <!-- Bitcoin Section -->
+        <div class="crypto-details" id="btc-details" style="display:none;">
+            <h2>Bitcoin (BTC)</h2>
+            <div class="crypto-info">
+                <div class="info-item">
+                    <h3>Current Price</h3>
+                    <p id="btc-price"></p>
+                </div>
+                <div class="info-item">
+                    <h3>24h Change</h3>
+                    <p id="btc-change"></p>
+                </div>
+                <div class="info-item">
+                    <h3>Market Cap</h3>
+                    <p id="btc-market-cap"></p>
+                </div>
+                <div class="info-item">
+                    <h3>Volume</h3>
+                    <p id="btc-volume"></p>
+                </div>
+            </div>
+            <!-- Chart for Bitcoin -->
+            <div class="chart-container">
+                <canvas id="btc-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Ethereum Section -->
+        <div class="crypto-details" id="eth-details" style="display:none;">
+            <h2>Ethereum (ETH)</h2>
+            <div class="crypto-info">
+                <div class="info-item">
+                    <h3>Current Price</h3>
+                    <p id="eth-price"></p>
+                </div>
+                <div class="info-item">
+                    <h3>24h Change</h3>
+                    <p id="eth-change"></p>
+                </div>
+                <div class="info-item">
+                    <h3>Market Cap</h3>
+                    <p id="eth-market-cap"></p>
+                </div>
+                <div class="info-item">
+                    <h3>Volume</h3>
+                    <p id="eth-volume"></p>
+                </div>
+            </div>
+            <!-- Chart for Ethereum -->
+            <div class="chart-container">
+                <canvas id="eth-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Binance Coin Section -->
+        <div class="crypto-details" id="bnb-details" style="display:none;">
+            <h2>Binance Coin (BNB)</h2>
+            <div class="crypto-info">
+                <div class="info-item">
+                    <h3>Current Price</h3>
+                    <p id="bnb-price"></p>
+                </div>
+                <div class="info-item">
+                    <h3>24h Change</h3>
+                    <p id="bnb-change"></p>
+                </div>
+                <div class="info-item">
+                    <h3>Market Cap</h3>
+                    <p id="bnb-market-cap"></p>
+                </div>
+                <div class="info-item">
+                    <h3>Volume</h3>
+                    <p id="bnb-volume"></p>
+                </div>
+            </div>
+            <!-- Chart for Binance Coin -->
+            <div class="chart-container">
+                <canvas id="bnb-chart"></canvas>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2025 Azura Wallet. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        // Reaaliaikainen tietojen hakeminen API:sta
+        function fetchCryptoData() {
+            fetch('https://api.coingecko.com/api/v3/coins/bitcoin')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('btc-price').innerText = `$${data.market_data.current_price.usd}`;
+                    document.getElementById('btc-change').innerText = `${data.market_data.price_change_percentage_24h.toFixed(2)}%`;
+                    document.getElementById('btc-market-cap').innerText = `$${data.market_data.market_cap.usd}`;
+                    document.getElementById('btc-volume').innerText = `$${data.market_data.total_volume.usd}`;
+                    document.getElementById('btc-details').style.display = 'block';
+                })
+                .catch(error => {
+                    document.getElementById('error').innerText = "Virhe tietojen latauksessa.";
+                });
+
+            fetch('https://api.coingecko.com/api/v3/coins/ethereum')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('eth-price').innerText = `$${data.market_data.current_price.usd}`;
+                    document.getElementById('eth-change').innerText = `${data.market_data.price_change_percentage_24h.toFixed(2)}%`;
+                    document.getElementById('eth-market-cap').innerText = `$${data.market_data.market_cap.usd}`;
+                    document.getElementById('eth-volume').innerText = `$${data.market_data.total_volume.usd}`;
+                    document.getElementById('eth-details').style.display = 'block';
+                })
+                .catch(error => {
+                    document.getElementById('error').innerText = "Virhe tietojen latauksessa.";
+                });
+
+            fetch('https://api.coingecko.com/api/v3/coins/binancecoin')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('bnb-price').innerText = `$${data.market_data.current_price.usd}`;
+                    document.getElementById('bnb-change').innerText = `${data.market_data.price_change_percentage_24h.toFixed(2)}%`;
+                    document.getElementById('bnb-market-cap').innerText = `$${data.market_data.market_cap.usd}`;
+                    document.getElementById('bnb-volume').innerText = `$${data.market_data.total_volume.usd}`;
+                    document.getElementById('bnb-details').style.display = 'block';
+                })
+                .catch(error => {
+                    document.getElementById('error').innerText = "Virhe tietojen latauksessa.";
+                });
+        }
+
+        // Ladataan tiedot sivun latauksen yhteydessä
+        window.onload = fetchCryptoData;
+
+        // Data for Bitcoin chart
+        const btcChart = new Chart(document.getElementById('btc-chart'), {
+            type: 'line',
+            data: {
+                labels: ['1d', '2d', '3d', '4d', '5d', '6d', '7d'],
+                datasets: [{
+                    label: 'Bitcoin Price',
+                    data: [42000, 43000, 42500, 44000, 44500, 44200, 45500],
+                    borderColor: '#00d1b2',
+                    backgroundColor: 'rgba(0, 209, 178, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Data for Ethereum chart
+        const ethChart = new Chart(document.getElementById('eth-chart'), {
+            type: 'line',
+            data: {
+                labels: ['1d', '2d', '3d', '4d', '5d', '6d', '7d'],
+                datasets: [{
+                    label: 'Ethereum Price',
+                    data: [3200, 3250, 3300, 3350, 3400, 3450, 3500],
+                    borderColor: '#8e44ad',
+                    backgroundColor: 'rgba(142, 68, 173, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Data for Binance Coin chart
+        const bnbChart = new Chart(document.getElementById('bnb-chart'), {
+            type: 'line',
+            data: {
+                labels: ['1d', '2d', '3d', '4d', '5d', '6d', '7d'],
+                datasets: [{
+                    label: 'Binance Coin Price',
+                    data: [480, 485, 490, 495, 500, 505, 510],
+                    borderColor: '#f39c12',
+                    backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                },
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
