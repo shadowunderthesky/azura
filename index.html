@@ -12,6 +12,7 @@
             padding: 0;
             background-color: #f4f4f9;
             color: #333;
+            box-sizing: border-box;
         }
 
         header {
@@ -21,12 +22,15 @@
             text-align: center;
             font-size: 24px;
             font-weight: 500;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .container {
             padding: 15px;
             max-width: 100%;
             margin: auto;
+            box-sizing: border-box;
         }
 
         .card {
@@ -36,6 +40,7 @@
             padding: 15px;
             margin-bottom: 20px;
             width: 100%;
+            box-sizing: border-box;
             transition: transform 0.3s ease;
         }
 
@@ -85,6 +90,7 @@
             bottom: 0;
             width: 100%;
             z-index: 10;
+            box-sizing: border-box;
         }
 
         .nav a {
@@ -97,6 +103,7 @@
             width: 25%;
             text-align: center;
             transition: background-color 0.3s ease;
+            box-sizing: border-box;
         }
 
         .nav a:hover {
@@ -107,15 +114,19 @@
             background-color: #1abc9c;
         }
 
+        /* Media queries for mobile responsiveness */
         @media (max-width: 600px) {
-            .nav {
-                flex-direction: row;
-                align-items: center;
+            header {
+                font-size: 20px;
                 padding: 10px 0;
             }
 
+            .container {
+                padding: 10px;
+            }
+
             .card {
-                padding: 15px;
+                padding: 12px;
                 margin-bottom: 15px;
             }
 
@@ -129,6 +140,17 @@
 
             .card-footer {
                 font-size: 12px;
+            }
+
+            .nav {
+                flex-direction: row;
+                padding: 8px 0;
+            }
+
+            .nav a {
+                font-size: 14px;
+                padding: 8px;
+                width: 20%;
             }
         }
     </style>
@@ -167,14 +189,14 @@
     <div class="card">
         <div class="card-header">Lisää uusi projekti</div>
         <div class="card-body">
-            <button style="width: 100%; padding: 10px; background-color: #2ecc71; color: white; border-radius: 8px;">Lisää projekti</button>
+            <button style="width: 100%; padding: 10px; background-color: #2ecc71; color: white; border-radius: 8px; border: none;">Lisää projekti</button>
         </div>
     </div>
 
     <div class="card">
         <div class="card-header">Lisää uusi asiakas</div>
         <div class="card-body">
-            <button style="width: 100%; padding: 10px; background-color: #2ecc71; color: white; border-radius: 8px;">Lisää asiakas</button>
+            <button style="width: 100%; padding: 10px; background-color: #2ecc71; color: white; border-radius: 8px; border: none;">Lisää asiakas</button>
         </div>
     </div>
 
@@ -189,3 +211,4 @@
 
 </body>
 </html>
+
